@@ -10,7 +10,7 @@ public class HdfsReader {
         SparkSession sparkSession = SparkSession.builder().master("local").appName("Hdfs Reader").getOrCreate();
 
         Dataset<Row> rawData = sparkSession.read().option("header",true).csv("hdfs://localhost:8020/data/movies.csv");
-        Dataset<Row> milenyumDS = rawData.filter(rawData.col("title").contains("(2000"));
-        milenyumDS.show();
+        Dataset<Row> userId = rawData.groupBy("userId").count();
+        userId.coalesce(1).write().partitionBy("userId").csv("hdfs://localhost:8020/data/useridcount");
     }
 }
